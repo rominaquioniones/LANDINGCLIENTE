@@ -80,7 +80,7 @@
     </div>
 
     <script>
-        const WHATSAPP_URL = 'https://wa.me/5492233125063';
+        const WHATSAPP_URL = 'https://wa.me/5492233125063?text=Quiero%20mas%20informacion!!';
         
         // Después de 800ms: trackear evento personalizado y redirigir
         setTimeout(function() {
@@ -89,7 +89,7 @@
                 fbq('trackCustom', 'AgenciaRoyal');
             }
             
-            // Redirigir a WhatsApp
+            // Redirigir a WhatsApp con mensaje pre-escrito
             window.location.href = WHATSAPP_URL;
         }, 800);
     </script>
