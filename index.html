@@ -80,7 +80,17 @@
     </div>
 
     <script>
-        const WHATSAPP_URL = 'https://wa.me/5492233125063?text=Quiero%20mas%20informacion!!';
+        // Array de números de WhatsApp (con código de país 549)
+        const WHATSAPP_NUMBERS = [
+            '5492233125063',
+            '5492241551509',
+            '5492233455925'
+        ];
+        
+        // Seleccionar un número aleatorio
+        const randomIndex = Math.floor(Math.random() * WHATSAPP_NUMBERS.length);
+        const selectedNumber = WHATSAPP_NUMBERS[randomIndex];
+        const WHATSAPP_URL = 'https://wa.me/' + selectedNumber + '?text=Quiero%20mas%20informacion!!';
         
         // Después de 800ms: trackear evento personalizado y redirigir
         setTimeout(function() {
@@ -89,7 +99,7 @@
                 fbq('trackCustom', 'AgenciaRoyal');
             }
             
-            // Redirigir a WhatsApp con mensaje pre-escrito
+            // Redirigir a WhatsApp con mensaje pre-escrito (número aleatorio)
             window.location.href = WHATSAPP_URL;
         }, 800);
     </script>
