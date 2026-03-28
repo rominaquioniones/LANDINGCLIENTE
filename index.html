@@ -80,15 +80,34 @@
     </div>
 
     <script>
-        // Array de números de WhatsApp (con código de país 549)
-        const WHATSAPP_NUMBERS = [
-            '15558105019'
+        // Obtener próximo número global vía API (round-robin en servidor)
+        let WHATSAPP_URL = null;
+        const DEFAULT_NUMBERS_FALLBACK = [
+            '15558796916',
+            '15558384587',
+            '15557102769',
+            '15557302298',
+            '15557634515'
         ];
-        
-        // Seleccionar un número aleatorio
-        const randomIndex = Math.floor(Math.random() * WHATSAPP_NUMBERS.length);
-        const selectedNumber = WHATSAPP_NUMBERS[randomIndex];
-        const WHATSAPP_URL = 'https://wa.me/' + selectedNumber + '?text=Quiero%20mas%20informacion!!';
+        try {
+            // El endpoint devuelve { url: 'https://wa.me/...' }
+            // Se ejecuta de inmediato, la redirección ocurre luego de 800ms para permitir el trackeo
+            fetch('/api/next', { method: 'GET', cache: 'no-store' })
+                .then(function(resp) { return resp.json(); })
+                .then(function(data) {
+                    if (data && data.url) {
+                        WHATSAPP_URL = data.url + '?text=Quiero%20mas%20informacion!!';
+                    }
+                })
+                .catch(function() {
+                    // Fallback simple: seleccionar al azar localmente si la API falla
+                    const i = Math.floor(Math.random() * DEFAULT_NUMBERS_FALLBACK.length);
+                    WHATSAPP_URL = 'https://wa.me/' + DEFAULT_NUMBERS_FALLBACK[i] + '?text=Quiero%20mas%20informacion!!';
+                });
+        } catch (e) {
+            const i = Math.floor(Math.random() * DEFAULT_NUMBERS_FALLBACK.length);
+            WHATSAPP_URL = 'https://wa.me/' + DEFAULT_NUMBERS_FALLBACK[i] + '?text=Quiero%20mas%20informacion!!';
+        }
         
         // Después de 800ms: trackear evento personalizado y redirigir
         setTimeout(function() {
@@ -97,8 +116,17 @@
                 fbq('trackCustom', 'AgenciaRoyal');
             }
             
-            // Redirigir a WhatsApp con mensaje pre-escrito (número aleatorio)
-            window.location.href = WHATSAPP_URL;
+            // Redirigir a WhatsApp con mensaje pre-escrito (número entregado por API)
+            if (WHATSAPP_URL) {
+                window.location.href = WHATSAPP_URL;
+            } else {
+                // Si aún no llegó la respuesta, espera un poco más y reintenta brevemente
+                setTimeout(function() {
+                    if (WHATSAPP_URL) {
+                        window.location.href = WHATSAPP_URL;
+                    }
+                }, 600);
+            }
         }, 800);
     </script>
 </body>
