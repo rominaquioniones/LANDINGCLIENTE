@@ -86,7 +86,6 @@
             '15558796916',
             '15558384587',
             '15557102769',
-            '15557302298',
             '15557634515'
         ];
         try {
@@ -120,11 +119,12 @@
             if (WHATSAPP_URL) {
                 window.location.href = WHATSAPP_URL;
             } else {
-                // Si aún no llegó la respuesta, espera un poco más y reintenta brevemente
                 setTimeout(function() {
-                    if (WHATSAPP_URL) {
-                        window.location.href = WHATSAPP_URL;
+                    if (!WHATSAPP_URL) {
+                        const i = Math.floor(Math.random() * DEFAULT_NUMBERS_FALLBACK.length);
+                        WHATSAPP_URL = 'https://wa.me/' + DEFAULT_NUMBERS_FALLBACK[i] + '?text=Quiero%20mas%20informacion!!';
                     }
+                    window.location.href = WHATSAPP_URL;
                 }, 600);
             }
         }, 800);
